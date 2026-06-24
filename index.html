@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Building Robust, Reproducible State Analytic Workflows | Center for Assessment</title>
+  <meta name="description" content="Slides and resources from the NCSA 2026 workshop on building robust, reproducible state analytic workflows — presented by the Center for Assessment, Arizona Department of Education, and Montana Office of Public Instruction." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --green:       #00A84F;
+      --green-dark:  #007141;
+      --green-mid:   #6BBE4A;
+      --green-light: #ACD58F;
+      --black:       #231f20;
+      --gray-cool:   #EBEBEB;
+      --gray-mid:    #929183;
+      --text:        #2b2b2b;
+      --white:       #ffffff;
+      --max:         1080px;
+      --font:        'Open Sans', Arial, sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font);
+      font-size: 16px;
+      line-height: 1.6;
+      color: var(--text);
+      background: var(--white);
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: inherit; text-decoration: none; }
+    img { display: block; max-width: 100%; }
+
+    /* ---------- Sticky Header ---------- */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--white);
+      border-bottom: 3px solid var(--green);
+      box-shadow: 0 1px 6px rgba(0, 0, 0, 0.06);
+    }
+    .nav-inner {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 0.7rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+    .logo-link img { height: 42px; width: auto; }
+    nav { display: flex; gap: 1.6rem; }
+    nav a {
+      font-size: 0.80rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--black);
+      transition: color 0.15s ease;
+    }
+    nav a:hover { color: var(--green); }
+
+    /* ---------- Hero ---------- */
+    .hero {
+      background: var(--black);
+      padding: 2rem 1.5rem;
+    }
+    .hero-inner {
+      max-width: var(--max);
+      margin: 0 auto;
+      display: flex;
+      gap: 1.1rem;
+      align-items: stretch;
+    }
+    .hero-bar {
+      width: 5px;
+      flex: 0 0 5px;
+      background: var(--green);
+      border-radius: 2px;
+    }
+    .hero-eyebrow {
+      font-size: 0.67rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--green-mid);
+      margin-bottom: 0.5rem;
+    }
+    .hero h1 {
+      font-size: clamp(1.2rem, 3vw, 1.65rem);
+      font-weight: 700;
+      color: var(--white);
+      line-height: 1.25;
+      margin-bottom: 0.65rem;
+    }
+    .hero-meta { font-size: 0.9rem; color: #aaa; line-height: 1.5; }
+    .hero-meta strong { color: #ddd; font-weight: 700; }
+
+    .accent-line { height: 3px; background: var(--green); }
+
+    /* ---------- Main ---------- */
+    main {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 2.6rem 1.5rem 3rem;
+    }
+    .lede {
+      font-size: 1rem;
+      color: #3a3a3a;
+      max-width: 760px;
+      margin-bottom: 2.6rem;
+    }
+    .section-label {
+      font-size: 0.67rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--green);
+      margin-bottom: 0.35rem;
+    }
+    h2 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--black);
+      margin-bottom: 1.3rem;
+    }
+
+    /* ---------- Card grid ---------- */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.4rem;
+    }
+    .card {
+      display: flex;
+      flex-direction: column;
+      border: 1px solid var(--gray-cool);
+      border-radius: 3px;
+      overflow: hidden;
+      background: var(--white);
+      transition: transform 0.18s ease, box-shadow 0.18s ease;
+    }
+    a.card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 22px rgba(0, 0, 0, 0.09);
+    }
+    .card-img {
+      height: 155px;
+      width: 100%;
+      object-fit: cover;
+      object-position: top center;
+    }
+    .card-img-placeholder {
+      height: 155px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+      background: linear-gradient(135deg, var(--green) 0%, var(--green-dark) 100%);
+    }
+    .card-img-placeholder svg { width: 46px; height: 46px; }
+    .card-img-placeholder span {
+      font-size: 0.62rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: rgba(255, 255, 255, 0.92);
+    }
+    .card-type {
+      background: var(--black);
+      color: var(--white);
+      font-size: 0.62rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.10em;
+      padding: 0.42rem 1.2rem;
+    }
+    .card-body {
+      padding: 1.1rem 1.2rem 1.4rem;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+    .card-body h3 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--black);
+      line-height: 1.3;
+      margin-bottom: 0.3rem;
+    }
+    .card-presenter {
+      font-size: 0.73rem;
+      font-weight: 700;
+      color: var(--green-dark);
+      margin-bottom: 0.55rem;
+    }
+    .card-body p {
+      font-size: 0.84rem;
+      color: var(--text);
+      line-height: 1.55;
+      margin-bottom: 0.9rem;
+    }
+    .card-cta {
+      margin-top: auto;
+      font-size: 0.76rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--green);
+    }
+    .card-cta::after { content: " \2192"; }
+
+    /* Pending (no link yet) card */
+    .card-pending .card-cta { color: var(--gray-mid); }
+    .card-pending .card-cta::after { content: ""; }
+    .card-pending .card-img-placeholder {
+      background: linear-gradient(135deg, #9aa39c 0%, #6f776f 100%);
+    }
+
+    /* ---------- Divider ---------- */
+    .divider {
+      border: none;
+      border-top: 1px solid var(--gray-cool);
+      margin: 2.8rem 0 2.5rem;
+    }
+
+    /* ---------- Footer ---------- */
+    footer { background: var(--black); color: #cfcfcf; }
+    .footer-inner {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 2.6rem 1.5rem 1.5rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2.4rem;
+    }
+    .footer-col { flex: 1; min-width: 210px; }
+    .footer-brand img {
+      height: 38px;
+      width: auto;
+      filter: brightness(0) invert(1);
+      margin-bottom: 0.9rem;
+    }
+    .footer-brand p {
+      font-size: 0.82rem;
+      color: #9a9a9a;
+      line-height: 1.55;
+      max-width: 320px;
+    }
+    .footer-col h4 {
+      font-size: 0.67rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--green-mid);
+      margin-bottom: 0.9rem;
+    }
+    .footer-col ul { list-style: none; }
+    .footer-col li { margin-bottom: 0.55rem; }
+    .footer-col a {
+      font-size: 0.84rem;
+      color: #cfcfcf;
+      transition: color 0.15s ease;
+    }
+    .footer-col a:hover { color: var(--green-mid); }
+    .footer-bottom { border-top: 1px solid rgba(255, 255, 255, 0.12); }
+    .footer-bottom div {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 1.1rem 1.5rem;
+      font-size: 0.74rem;
+      color: #666;
+    }
+
+    /* ---------- Accessibility ---------- */
+    a:focus-visible {
+      outline: 3px solid var(--green);
+      outline-offset: 3px;
+      border-radius: 3px;
+    }
+
+    /* ---------- Responsive ---------- */
+    @media (max-width: 640px) {
+      .nav-inner {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.6rem;
+        padding: 0.7rem 1rem;
+      }
+      nav { gap: 1.1rem; flex-wrap: wrap; }
+      .hero { padding: 1.5rem 1rem; }
+      main { padding: 2rem 1rem 2.5rem; }
+      .footer-inner { padding: 2rem 1rem 1.2rem; gap: 1.8rem; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      * { transition: none !important; scroll-behavior: auto !important; }
+      a.card:hover { transform: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ============ HEADER ============ -->
+  <header>
+    <div class="nav-inner">
+      <a class="logo-link" href="https://www.nciea.org" target="_blank" rel="noopener">
+        <img src="CFA_Logo.png" alt="Center for Assessment" />
+      </a>
+      <nav>
+        <a href="https://www.nciea.org/library/" target="_blank" rel="noopener">Resources</a>
+        <a href="https://www.nciea.org/blog/" target="_blank" rel="noopener">CenterLine Blog</a>
+        <a href="https://www.nciea.org/contact/" target="_blank" rel="noopener">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ============ HERO ============ -->
+  <section class="hero">
+    <div class="hero-inner">
+      <div class="hero-bar"></div>
+      <div class="hero-text">
+        <div class="hero-eyebrow">NCSA 2026 Workshop</div>
+        <h1>Building Robust, Reproducible State Analytic Workflows: From Vision to Practice</h1>
+        <div class="hero-meta">
+          <strong>Center for Assessment</strong>&ensp;&middot;&ensp;<strong>Arizona Department of Education</strong>&ensp;&middot;&ensp;<strong>Montana Office of Public Instruction</strong>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div class="accent-line"></div>
+
+  <!-- ============ MAIN ============ -->
+  <main>
+
+    <p class="lede">
+      In an ideal world, state education agency staff would carry out assessment and accountability
+      analysis and reporting within robust, reproducible workflows &mdash; work that is well built, well
+      documented, and maintained from year to year. This workshop offers pragmatic, incremental approaches
+      for closing the gap between that vision and current practice, drawing on case studies from Arizona and
+      Montana and a parallel open-access eBook of code, guidance, and adaptable templates. The slides and
+      resources below are available to revisit after the session.
+    </p>
+
+    <!-- ---- Presentations ---- -->
+    <section id="presentations">
+      <div class="section-label">Slides &amp; Materials</div>
+      <h2>Session Presentations</h2>
+
+      <div class="card-grid">
+
+        <!-- Nathan Dadey -->
+        <a class="card" href="https://docs.google.com/presentation/d/1l0Hj4ivosPMMbJ9lBzvUAKqgJbIFOM3n/edit?usp=drive_link&amp;ouid=105513720702440443590&amp;rtpof=true&amp;sd=true" target="_blank" rel="noopener">
+          <div class="card-img-placeholder">
+            <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="4" y="8" width="40" height="28" rx="2" fill="rgba(255,255,255,0.2)" stroke="white" stroke-width="2"/>
+              <rect x="9" y="13" width="30" height="16" rx="1" fill="rgba(255,255,255,0.25)"/>
+              <line x1="18" y1="40" x2="30" y2="40" stroke="white" stroke-width="2" stroke-linecap="round"/>
+              <line x1="24" y1="36" x2="24" y2="40" stroke="white" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            <span>Presentation Slides</span>
+          </div>
+          <div class="card-type">Google Slides</div>
+          <div class="card-body">
+            <h3>Building Robust, Reproducible State Analytic Workflows</h3>
+            <div class="card-presenter">Nathan Dadey &middot; Center for Assessment</div>
+            <p>A generalizable, end-to-end workflow for producing accountability indicators and school identifications &mdash; covering programmatic automation, version control, automated quality-assurance checks, and report customization.</p>
+            <span class="card-cta">Open in Google Slides</span>
+          </div>
+        </a>
+
+        <!-- Sean Smith (TBD) -->
+        <div class="card card-pending" aria-label="Sean Smith, Arizona Department of Education — slides to be posted after the session">
+          <div class="card-img-placeholder">
+            <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="4" y="8" width="40" height="28" rx="2" fill="rgba(255,255,255,0.2)" stroke="white" stroke-width="2"/>
+              <rect x="9" y="13" width="30" height="16" rx="1" fill="rgba(255,255,255,0.25)"/>
+              <line x1="18" y1="40" x2="30" y2="40" stroke="white" stroke-width="2" stroke-linecap="round"/>
+              <line x1="24" y1="36" x2="24" y2="40" stroke="white" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            <span>Coming Soon</span>
+          </div>
+          <div class="card-type">Arizona Department of Education</div>
+          <div class="card-body">
+            <h3>Title to be announced</h3>
+            <div class="card-presenter">Sean Smith &middot; Arizona Department of Education</div>
+            <p>Arizona&rsquo;s work to strengthen the processes behind its state accountability system. Slides will be posted here after the session.</p>
+            <span class="card-cta">Slides coming soon</span>
+          </div>
+        </div>
+
+        <!-- Cedar Rose -->
+        <a class="card" href="https://docs.google.com/presentation/d/1ya9lOz424GLog99yeYSsGywUTjEBulM8/edit?usp=sharing&amp;ouid=105513720702440443590&amp;rtpof=true&amp;sd=true" target="_blank" rel="noopener">
+          <div class="card-img-placeholder">
+            <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="4" y="8" width="40" height="28" rx="2" fill="rgba(255,255,255,0.2)" stroke="white" stroke-width="2"/>
+              <rect x="9" y="13" width="30" height="16" rx="1" fill="rgba(255,255,255,0.25)"/>
+              <line x1="18" y1="40" x2="30" y2="40" stroke="white" stroke-width="2" stroke-linecap="round"/>
+              <line x1="24" y1="36" x2="24" y2="40" stroke="white" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            <span>Presentation Slides</span>
+          </div>
+          <div class="card-type">Google Slides</div>
+          <div class="card-body">
+            <h3>OPI&rsquo;s Business Rule Journey</h3>
+            <div class="card-presenter">Cedar Rose &middot; Montana Office of Public Instruction</div>
+            <p>How Montana&rsquo;s Office of Public Instruction has worked to improve the business rules and processes behind its state accountability system.</p>
+            <span class="card-cta">Open in Google Slides</span>
+          </div>
+        </a>
+
+      </div>
+    </section>
+
+    <hr class="divider" />
+
+    <!-- ---- Additional Resources ---- -->
+    <section id="resources">
+      <div class="section-label">Go Deeper</div>
+      <h2>Additional Resources</h2>
+
+      <div class="card-grid">
+
+        <!-- eBook -->
+        <a class="card" href="https://ndadey.github.io/SEA_Workflows2" target="_blank" rel="noopener">
+          <div class="card-img-placeholder">
+            <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M24 13 C20 10, 12 10, 8 12 L8 37 C12 35, 20 35, 24 38 C28 35, 36 35, 40 37 L40 12 C36 10, 28 10, 24 13 Z" fill="rgba(255,255,255,0.22)" stroke="white" stroke-width="2" stroke-linejoin="round"/>
+              <line x1="24" y1="13" x2="24" y2="38" stroke="white" stroke-width="2"/>
+            </svg>
+            <span>Open-Access eBook</span>
+          </div>
+          <div class="card-type">Online eBook</div>
+          <div class="card-body">
+            <h3>Building Robust, Reproducible State Analytic Workflows: From Vision to Practice</h3>
+            <p>The open-access eBook that parallels this workshop &mdash; detailed guidance, reproducible code, and adaptable templates you can use and modify for your own state&rsquo;s work.</p>
+            <span class="card-cta">Read the eBook</span>
+          </div>
+        </a>
+
+        <!-- ReportR -->
+        <a class="card" href="https://github.com/ndadey/ReportR" target="_blank" rel="noopener">
+          <div class="card-img-placeholder">
+            <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="6" y="9" width="36" height="30" rx="2" fill="rgba(255,255,255,0.2)" stroke="white" stroke-width="2"/>
+              <polyline points="18,20 13,24 18,28" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <polyline points="30,20 35,24 30,28" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <line x1="27" y1="18" x2="22" y2="30" stroke="white" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            <span>R Framework</span>
+          </div>
+          <div class="card-type">Software</div>
+          <div class="card-body">
+            <h3>ReportR</h3>
+            <p>A public, R-based framework and family of packages for repeatable state assessment analysis and reporting. Currently a functional beta in active development.</p>
+            <span class="card-cta">View on GitHub</span>
+          </div>
+        </a>
+
+        <!-- ReportR NCME workshop slides -->
+        <a class="card" href="https://docs.google.com/presentation/d/1bAAeuJ2n83Q5n85sBe2d3yuZ04N8jOkk/edit?usp=drive_link&amp;ouid=105513720702440443590&amp;rtpof=true&amp;sd=true" target="_blank" rel="noopener">
+          <div class="card-img-placeholder">
+            <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="4" y="8" width="40" height="28" rx="2" fill="rgba(255,255,255,0.2)" stroke="white" stroke-width="2"/>
+              <rect x="9" y="13" width="30" height="16" rx="1" fill="rgba(255,255,255,0.25)"/>
+              <line x1="18" y1="40" x2="30" y2="40" stroke="white" stroke-width="2" stroke-linecap="round"/>
+              <line x1="24" y1="36" x2="24" y2="40" stroke="white" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            <span>Presentation Slides</span>
+          </div>
+          <div class="card-type">Google Slides</div>
+          <div class="card-body">
+            <h3>ReportR 2026 NCME Workshop</h3>
+            <p>Slides from the ReportR workshop at the 2026 National Council on Measurement in Education (NCME) annual meeting.</p>
+            <span class="card-cta">Open in Google Slides</span>
+          </div>
+        </a>
+
+        <!-- Where the Rubber Meets the Road -->
+        <a class="card" href="https://www.nciea.org/library/where-the-rubber-meets-the-road-operations-and-quality-control-in-school-accountability-systems/" target="_blank" rel="noopener">
+          <div class="card-img-placeholder">
+            <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M14 6 H30 L38 14 V42 H14 Z" fill="rgba(255,255,255,0.2)" stroke="white" stroke-width="2" stroke-linejoin="round"/>
+              <path d="M30 6 V14 H38" fill="none" stroke="white" stroke-width="2" stroke-linejoin="round"/>
+              <line x1="19" y1="22" x2="33" y2="22" stroke="white" stroke-width="2" stroke-linecap="round"/>
+              <line x1="19" y1="28" x2="33" y2="28" stroke="white" stroke-width="2" stroke-linecap="round"/>
+              <line x1="19" y1="34" x2="28" y2="34" stroke="white" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            <span>Research Paper</span>
+          </div>
+          <div class="card-type">Research Paper</div>
+          <div class="card-body">
+            <h3>Where the Rubber Meets the Road</h3>
+            <p>Operations and Quality Control in School Accountability Systems (CCSSO, 2018) &mdash; the input &rarr; process &rarr; output framework and quality-control practices that underpin much of this work.</p>
+            <span class="card-cta">Read the Paper</span>
+          </div>
+        </a>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ============ FOOTER ============ -->
+  <footer>
+    <div class="footer-inner">
+
+      <div class="footer-col footer-brand">
+        <img src="CFA_Logo.png" alt="Center for Assessment" />
+        <p>The National Center for the Improvement of Educational Assessment (Center for Assessment) supports states and other organizations in designing and using sound assessment and accountability systems.</p>
+      </div>
+
+      <div class="footer-col">
+        <h4>On This Page</h4>
+        <ul>
+          <li><a href="https://docs.google.com/presentation/d/1l0Hj4ivosPMMbJ9lBzvUAKqgJbIFOM3n/edit?usp=drive_link&amp;ouid=105513720702440443590&amp;rtpof=true&amp;sd=true" target="_blank" rel="noopener">Nathan Dadey &mdash; Slides</a></li>
+          <li><a href="#presentations">Sean Smith &mdash; Arizona (coming soon)</a></li>
+          <li><a href="https://docs.google.com/presentation/d/1ya9lOz424GLog99yeYSsGywUTjEBulM8/edit?usp=sharing&amp;ouid=105513720702440443590&amp;rtpof=true&amp;sd=true" target="_blank" rel="noopener">Cedar Rose &mdash; Slides</a></li>
+          <li><a href="https://ndadey.github.io/SEA_Workflows2" target="_blank" rel="noopener">Open-Access eBook</a></li>
+          <li><a href="https://github.com/ndadey/ReportR" target="_blank" rel="noopener">ReportR</a></li>
+          <li><a href="https://www.nciea.org/library/where-the-rubber-meets-the-road-operations-and-quality-control-in-school-accountability-systems/" target="_blank" rel="noopener">Where the Rubber Meets the Road</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Center for Assessment</h4>
+        <ul>
+          <li><a href="https://www.nciea.org" target="_blank" rel="noopener">nciea.org</a></li>
+          <li><a href="https://www.nciea.org/library/" target="_blank" rel="noopener">Resources Library</a></li>
+          <li><a href="https://www.nciea.org/blog/" target="_blank" rel="noopener">CenterLine Blog</a></li>
+          <li><a href="https://www.nciea.org/contact/" target="_blank" rel="noopener">Contact</a></li>
+        </ul>
+      </div>
+
+    </div>
+    <div class="footer-bottom">
+      <div>&copy; 2026 National Center for the Improvement of Educational Assessment (Center for Assessment).</div>
+    </div>
+  </footer>
+
+</body>
+</html>
